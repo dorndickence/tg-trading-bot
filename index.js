@@ -36,6 +36,19 @@ new Coinbase({
   privateKey: process.env.COINBASE_API_KEY_SECRET,
 });
 
+
+// Add a dummy HTTP server
+const PORT = process.env.PORT || 10000; // Use the PORT environment variable or default to 10000
+http
+  .createServer((req, res) => {
+    res.writeHead(200, { "Content-Type": "text/plain" });
+    res.end("This is a dummy HTTP server for Render port binding.\n");
+  })
+  .listen(PORT, "0.0.0.0", () => {
+    console.log(`HTTP server running on port ${PORT}`);
+  });
+
+
 // Helper functions
 const updateUserState = (user, state) => {
   userStates[user.id] = { ...userStates[user.id], ...state };
