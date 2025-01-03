@@ -75,36 +75,39 @@ const handleUserState = async (ctx, handler) => {
   }
 };
 
-// Bot command handlers
 bot.command("start", async (ctx) => {
-  const { from: user } = ctx;
-  updateUserState(user, {});
-  userAddress = await getOrCreateAddress(user);
+  console.log('Start command received from user:', ctx.from.id); // Log user ID
+  try {
+    const { from: user } = ctx;
+    updateUserState(user, {});
+    const userAddress = await getOrCreateAddress(user); // Ensure this function works correctly
 
-  const keyboard = new InlineKeyboard()
-    .text("Check Balance", "check_balance")
-    .row()
-    .text("Deposit ETH", "deposit_eth")
-    .row()
-    .text("Withdraw ETH", "withdraw_eth")
-    .row()
-    .text("Buy", "buy")
-    .text("Sell", "sell")
-    .row()
-    .text("Export key", "export_key")
-    .text("Pin message", "pin_message");
+    const keyboard = new InlineKeyboard()
+      .text("Check Balance", "check_balance")
+      .row()
+      .text("Deposit ETH", "deposit_eth")
+      .row()
+      .text("Withdraw ETH", "withdraw_eth")
+      .row()
+      .text("Buy", "buy")
+      .text("Sell", "sell")
+      .row()
+      .text("Export key", "export_key")
+      .text("Pin message", "pin_message");
 
-  const welcomeMessage = `
-  *Welcome to your Onchain Trading Bot!*
-  Your Base address is ${userAddress.getId()}.
-  Select an option below:`;
+    const welcomeMessage = `
+    *Welcome to your Onchain Trading Bot!*
+    Your Base address is ${userAddress.getId()}.
+    Select an option below:`;
 
-  await sendReply(ctx, welcomeMessage, {
-    reply_markup: keyboard,
-    parse_mode: "Markdown",
-  });
+    await sendReply(ctx, welcomeMessage, {
+      reply_markup: keyboard,
+      parse_mode: "Markdown",
+    });
+  } catch (error) {
+    console.error('Error in start command:', error); // Log any errors
+  }
 });
-
 // Callback query handlers
 const callbackHandlers = {
   check_balance: handleCheckBalance,
